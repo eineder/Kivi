@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/eineder/kivi/store"
 )
+
+var s store.Store = store.NewInMemoryStore()
 
 func Start(port string) {
 	http.HandleFunc("/items/", itemsHandler)
@@ -39,24 +43,46 @@ func itemsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createItem(w http.ResponseWriter, r *http.Request, key string) {
+	value := r.FormValue("value")
+	err := s.CreateItem(key, value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(fmt.Sprintf(`{"message": "Item %s created"}`, key)))
 }
 
 func getItem(w http.ResponseWriter, r *http.Request, key string) {
+	value, err := s.GetItem(key)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf(`{"item": {"key": "%s"}}`, key)))
+	w.Write([]byte(fmt.Sprintf(`{"item": {"key": "%s", "value": "%s"}}`, key, value)))
 }
 
 func updateItem(w http.ResponseWriter, r *http.Request, key string) {
+	value := r.FormValue("value")
+	err := s.UpdateItem(key, value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf(`{"message": "Item %s updated"}`, key)))
 }
 
 func deleteItem(w http.ResponseWriter, r *http.Request, key string) {
+	err := s.DeleteItem(key)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf(`{"message": "Item %s deleted"}`, key)))

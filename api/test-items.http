@@ -1,0 +1,23 @@
+### Create an item
+POST http://localhost:8080/items/item1
+Content-Type: application/x-www-form-urlencoded
+
+value=Value1
+
+### Get the created item
+GET http://localhost:8080/items/item1
+
+### Update the item
+PUT http://localhost:8080/items/item1
+Content-Type: application/x-www-form-urlencoded
+
+value=UpdatedValue1
+
+### Get the updated item
+GET http://localhost:8080/items/item1
+
+### Delete the item
+DELETE http://localhost:8080/items/item1
+
+### Try to get the deleted item
+GET http://localhost:8080/items/item1

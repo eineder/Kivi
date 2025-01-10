@@ -1,0 +1,47 @@
+### Create an item
+POST http://localhost:8080/items/item1
+Content-Type: text/plain
+
+Value1
+
+### Get the created item
+GET http://localhost:8080/items/item1
+Accept: application/json
+
+> {%
+client.test("Item value is Value1", function() {
+    var value = response.body.payload;
+    client.assert(value === "Value1", "Expected value to be Value1 but got " + value);
+});
+%}
+
+### Update the item
+PUT http://localhost:8080/items/item1
+Content-Type: text/plain
+
+UpdatedValue1
+
+### Get the updated item
+GET http://localhost:8080/items/item1
+Accept: application/json
+
+> {%
+client.test("Item value is UpdatedValue1", function() {
+    var value = response.body.payload;
+    client.assert(value === "UpdatedValue1", "Expected value to be UpdatedValue1 but got " + value);
+});
+%}
+
+### Delete the item
+DELETE http://localhost:8080/items/item1
+
+### Try to get the deleted item
+GET http://localhost:8080/items/item1
+Accept: application/json
+
+> {%
+client.test("Item is deleted", function() {
+    var success = response.body.success;
+    client.assert(success === false, "Expected success to be false but got " + success);
+});
+%}

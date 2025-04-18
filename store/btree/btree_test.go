@@ -19,9 +19,21 @@ func TestBTreeInsert(t *testing.T) {
 			then:  &Node{keys: []int{3}},
 		},
 		{
-			name:  "Insert to root",
-			given: &Node{keys: []int{1, 2, 4}},
-			when:  3,
+			name:  "Insert to root (middle)",
+			given: &Node{keys: []int{1, 3, 5}},
+			when:  4,
+			then:  &Node{keys: []int{1, 3, 4, 5}},
+		},
+		{
+			name:  "Insert to root (start)",
+			given: &Node{keys: []int{2, 3, 4}},
+			when:  1,
+			then:  &Node{keys: []int{1, 2, 3, 4}},
+		},
+		{
+			name:  "Insert to root (end)",
+			given: &Node{keys: []int{1, 2, 3}},
+			when:  4,
 			then:  &Node{keys: []int{1, 2, 3, 4}},
 		},
 		{

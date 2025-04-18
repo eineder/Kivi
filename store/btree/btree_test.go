@@ -8,29 +8,29 @@ import (
 func TestBTreeInsert(t *testing.T) {
 	tests := []struct {
 		name  string
-		given *node
+		given *Node
 		when  int
-		then  *node
+		then  *Node
 	}{
 		{
 			name:  "Empty tree",
 			given: nil,
 			when:  3,
-			then:  &node{keys: []int{3}},
+			then:  &Node{keys: []int{3}},
 		},
 		{
 			name:  "Insert to root",
-			given: &node{keys: []int{1, 2, 4}},
+			given: &Node{keys: []int{1, 2, 4}},
 			when:  3,
-			then:  &node{keys: []int{1, 2, 3, 4}},
+			then:  &Node{keys: []int{1, 2, 3, 4}},
 		},
 		{
 			name:  "Split root",
-			given: &node{keys: []int{1, 2, 4, 5}},
+			given: &Node{keys: []int{1, 2, 4, 5}},
 			when:  3,
-			then: &node{
+			then: &Node{
 				keys: []int{3},
-				children: []*node{
+				children: []*Node{
 					{keys: []int{1, 2}},
 					{keys: []int{4, 5}},
 				},
@@ -38,52 +38,40 @@ func TestBTreeInsert(t *testing.T) {
 		},
 		{
 			name: "Insert to leaf (middle)",
-			given: &node{
+			given: &Node{
 				keys:     []int{10, 20, 30, 40},
-				children: []*node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 19}}},
+				children: []*Node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 19}}},
 			},
 			when: 17,
-			then: &node{
+			then: &Node{
 				keys:     []int{10, 20, 30, 40},
-				children: []*node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 17, 19}}},
+				children: []*Node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 17, 19}}},
 			},
 		},
-
 		{
 			name: "Insert to leaf (start)",
-			given: &node{
+			given: &Node{
 				keys:     []int{10, 20, 30, 40},
-				children: []*node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 19}}},
+				children: []*Node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 19}}},
 			},
 			when: 14,
-			then: &node{
+			then: &Node{
 				keys:     []int{10, 20, 30, 40},
-				children: []*node{{keys: []int{5, 6, 7}}, {keys: []int{14, 15, 16, 19}}},
+				children: []*Node{{keys: []int{5, 6, 7}}, {keys: []int{14, 15, 16, 19}}},
 			},
 		},
 		{
 			name: "Insert to leaf (end)",
-			given: &node{
+			given: &Node{
 				keys:     []int{10, 20, 30, 40},
-				children: []*node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 18}}},
+				children: []*Node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 18}}},
 			},
 			when: 19,
-			then: &node{
+			then: &Node{
 				keys:     []int{10, 20, 30, 40},
-				children: []*node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 18, 19}}},
+				children: []*Node{{keys: []int{5, 6, 7}}, {keys: []int{15, 16, 18, 19}}},
 			},
 		},
-		// {
-		// 	name: "Split leaf",
-		// 	given: &node{
-		// 		keys:     []int{10, 20, 30},
-		// 		children: []*node{{keys: []int{5, 6}}, {keys: []int{15, 16, 17, 18}}, {keys: []int{25}}, {keys: []int{35}}},
-		// 	},
-		// 	when: 14,
-		// 	then: &node{
-		// 		keys:     []int{10, 16, 20, 30},
-		// 		children: []*node{{keys: []int{5, 6}}, {keys: []int{14, 15}}, keys: {[]int{17, 18}}}, {keys: []int{25}}, {keys: []int{35}}},
-		// },
 	}
 
 	for _, tt := range tests {
@@ -109,36 +97,36 @@ func TestBTreeInsert(t *testing.T) {
 func TestFindChild(t *testing.T) {
 	tests := []struct {
 		name     string
-		node     *node
+		node     *Node
 		key      int
-		expected *node
+		expected *Node
 	}{
 		{
 			name: "Find child in the middle",
-			node: &node{
+			node: &Node{
 				keys:     []int{10, 20, 30},
-				children: []*node{{keys: []int{5}}, {keys: []int{15}}, {keys: []int{25}}, {keys: []int{35}}},
+				children: []*Node{{keys: []int{5}}, {keys: []int{15}}, {keys: []int{25}}, {keys: []int{35}}},
 			},
 			key:      22,
-			expected: &node{keys: []int{25}},
+			expected: &Node{keys: []int{25}},
 		},
 		{
 			name: "Find child at the beginning",
-			node: &node{
+			node: &Node{
 				keys:     []int{10, 20, 30},
-				children: []*node{{keys: []int{5}}, {keys: []int{15}}, {keys: []int{25}}, {keys: []int{35}}},
+				children: []*Node{{keys: []int{5}}, {keys: []int{15}}, {keys: []int{25}}, {keys: []int{35}}},
 			},
 			key:      8,
-			expected: &node{keys: []int{5}},
+			expected: &Node{keys: []int{5}},
 		},
 		{
 			name: "Find child at the end",
-			node: &node{
+			node: &Node{
 				keys:     []int{10, 20, 30},
-				children: []*node{{keys: []int{5}}, {keys: []int{15}}, {keys: []int{25}}, {keys: []int{35}}},
+				children: []*Node{{keys: []int{5}}, {keys: []int{15}}, {keys: []int{25}}, {keys: []int{35}}},
 			},
 			key:      32,
-			expected: &node{keys: []int{35}},
+			expected: &Node{keys: []int{35}},
 		},
 	}
 
@@ -152,7 +140,15 @@ func TestFindChild(t *testing.T) {
 		})
 	}
 }
-func Equals(node1 *node, node2 *node) (bool, string) {
+
+func Equals(node1 *Node, node2 *Node) (bool, string) {
+	if node1 == nil && node2 == nil {
+		return true, ""
+	}
+	if node1 == nil || node2 == nil {
+		return false, "one node is nil while the other is not"
+	}
+
 	node1keysCount := len(node1.keys)
 	node2keysCount := len(node2.keys)
 

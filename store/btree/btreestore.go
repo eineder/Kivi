@@ -1,7 +1,7 @@
 package store
 
 type BTreeStore struct {
-	treeRoot *node
+	treeRoot *Node
 }
 
 func NewBTreeStore() *BTreeStore {
